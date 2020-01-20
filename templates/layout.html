@@ -48,9 +48,20 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/stl_viewer">STL Viewer</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/about">About</a>
-                </li>
+                <li class="nav-item dropdown dmenu">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                      Account
+                    </a>
+                    <div class="dropdown-menu sm-menu">
+                    {%if session.userid%}  
+                        <a class="dropdown-item" href="/basket">Basket</a>
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    {%else%}
+                        <a class="dropdown-item" href="/login">Login</a>
+                        <a class="dropdown-item" href="/register">Register</a>
+                    {%endif%}
+                    </div>
+                  </li>
                <!-- <li class="nav-item dropdown dmenu">
                 <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
                   Dropdown link
@@ -95,7 +106,7 @@
         </main>
 
         <footer class="small text-center text-muted">
-            Contact us. <a href = "mailto: angelodark92@gmail.com">Email</a><a class="nav-link" href="tel:0961923680">Phone</a>
+            Contact us. <a href = "mailto: angelodark92@gmail.com">Email &nbsp;</a><a href="tel:0961923680">Phone &nbsp;</a> <a href="/about">About;</a>
         </footer>
 
     </body>
