@@ -27,15 +27,20 @@ def stl_viewer():
     # Todo
     return render_template ("stl_viewer.html")
 
-@app.route("/order")
-def order():
+@app.route("/basket")
+def basket():
     # Todo
-    return render_template ("order.html")
+    return render_template ("basket.html")
 
 @app.route("/models")
 def models():
     # Todo
     return render_template ("models.html")
+
+@app.route("/about")
+def about():
+    # Todo
+    return render_template ("about.html")
 
 if __name__ == "__main__":
     app.run(debug = True)
