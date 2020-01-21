@@ -37,10 +37,10 @@ def menu():
     # Todo
     return render_template ("menu.html")
 
-@app.route("/about")
-def about():
+@app.route("/orders")
+def orders():
     # Todo
-    return render_template ("about.html")
+    return render_template ("orders.html")
 
 if __name__ == "__main__":
     app.run(debug = True)
