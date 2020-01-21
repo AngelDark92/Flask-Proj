@@ -22,20 +22,20 @@ def register():
     # Todo
     return render_template ("register.html")
 
-@app.route("/stl_viewer")
-def stl_viewer():
+@app.route("/table")
+def table():
     # Todo
-    return render_template ("stl_viewer.html")
+    return render_template ("table.html")
 
 @app.route("/basket")
 def basket():
     # Todo
     return render_template ("basket.html")
 
-@app.route("/models")
-def models():
+@app.route("/menu")
+def menu():
     # Todo
-    return render_template ("models.html")
+    return render_template ("menu.html")
 
 @app.route("/about")
 def about():
