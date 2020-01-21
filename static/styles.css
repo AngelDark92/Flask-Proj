@@ -1,42 +1,20 @@
 /* styles from https://bootsnipp.com/snippets/vlX7j */
 
-.social-part .fa{
-    padding-right:20px;
-}
-ul li a{
-    margin-right: 20px;
-}
-
-.navbar {
-    position: relative;
-}
-.brand {
-    position: absolute;
-    left: 50%;
-    margin-left: -50px;
-    display: block;
-}
-
-main .form-control
-{
+main .form-control {
     /* center form controls */
     display: inline-block;
-
     /* override Bootstrap's 100% width for form controls */
     width: auto;
 }
 
-main
-{
+main {
     /* scroll horizontally as needed */
     overflow-x: auto;
-
     /* center contents */
     text-align: center;
 }
 
-main img
-{
+main img {
     /* constrain images on small screens */
     max-width: 100%;
 }
