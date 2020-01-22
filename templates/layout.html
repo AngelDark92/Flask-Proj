@@ -11,15 +11,13 @@
     <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
-    <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
-    <link href="/static/favicon.ico" rel="icon">
-
     <link href="/static/styles.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <link rel="icon" href="static/pizza_fav.ico">
+    <!-- favicon of pizza -->
+    <link rel="icon" href="../static/pizza_fav.ico">
     <title>La Tavernetta - Restaurant, Pizzeria</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -48,9 +46,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/table">Tables</a>
                     </li>
+                    <!-- if the user id is 1 get the right buttons to show -->
+                    {% if session.get("user_id") and session.get("user_id") > 1 %}
                     <li class="nav-item">
                         <a class="nav-link" href="/orders">My Orders</a>
                     </li>
+                    {% elif session.get("user_id") == 1 %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_orders">Orders</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="order-first order-md-0 d-flex justify-content-center">
@@ -58,9 +63,20 @@
             </div>
             <div class="collapse navbar-collapse flex-1">
                 <ul class="nav navbar-nav ml-auto">
-                    {% if session.userid %}
+                    {% if session.user_id and session.get("user_id") > 1%}
                     <li class="nav-item">
                         <a class="nav-link" href="/basket">Basket</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/passw">Change Password</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+
+                    {% elif session.get("user_id") == 1 %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/passw">Change Password</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>

@@ -1,23 +1,24 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Index
+    Change Password
 {% endblock %}
 
 {% block main %}
-
-<form action="/register" method="post" id = register_form onSubmit = "return checkPassword(this)" class="needs-validation" novalidate>
+<form action="/passw" method="post" onSubmit = "return checkPassword(this)" class="needs-validation" novalidate>
     <div class="form-group">
-        <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text" id="validationCustom01" required>
+        <input autocomplete="off" autofocus class="form-control" name="old_pw" placeholder="Old Password" type="password" id="validationCustom01" required>
     </div>
     <div class="form-group">
-        <input class="form-control" name="password" placeholder="Password" type="password" id="validationCustom02" required>
+        <input class="form-control" name="password1" placeholder="Password" type="password" id="validationCustom02" required>
     </div>
     <div class="form-group">
-        <input class="form-control" name="confirmation" placeholder="Confirm Password" type="password" id="validationCustom03" required>
+        <input class="form-control" name="password2" placeholder="Confirm Password" type="password" id="validationCustom03" required>
     </div>
-    <button class="btn btn-primary" type="submit" id="button">Register</button>
+    <button class="btn btn-primary" type="submit">Change</button>
 </form>
+
+
 <script>
 // Script imported from bootstrap validation page
 // Example starter JavaScript for disabling form submissions if there are invalid fields
@@ -43,8 +44,9 @@
 // Function to check Whether both passwords
 // is same or not.
 function checkPassword(form) {
-    password1 = form.password.value;
-    password2 = form.confirmation.value;
+    old_password = form.old_pw.value;
+    password1 = form.password1.value;
+    password2 = form.password2.value;
 
     // If Not same return False.
     if (password1 != password2) {
@@ -57,22 +59,5 @@ function checkPassword(form) {
         return true;
     }
 }
-
-// this was much harder to code, javascript and ajax were not explored well enough...
-document.getElementById('register_form').addEventListener('submit', function(evt){
-    evt.preventDefault();
-    let username = document.getElementById("validationCustom01").value
-    $.get('/check?username=' + username, function(check){
-        if (check == true) {
-            document.getElementById("register_form").submit();
-        }
-        else {
-            alert('Username already exists');
-            //resets the whole form after the alert
-            document.getElementById("register_form").reset();
-        }
-    });
-});
 </script>
-
 {% endblock %}
