@@ -1,6 +1,15 @@
-from flask import Flask, render_template, make_response
+from flask import Flask, render_template, make_response, url_for, jsonify, redirect, session, flash, request
+from cs50 import SQL
+from flask_session import Session
+from datetime import datetime
+from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///tavernetta.db"
+db = SQL("sqlite:///finance.db")
+
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 @app.route("/")
 def index():
