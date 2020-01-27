@@ -273,16 +273,16 @@ def basket():
                     seats = db.execute("SELECT item_id, user_id, SUM(total_price) as total, item_name, SUM (number) AS number FROM basket WHERE user_id = :userid AND item_id BETWEEN 6 AND 7 GROUP BY item_id", userid=session["user_id"])
                     if seats:
                         for seat in seats:
-                            db.execute("INSERT INTO orders (item_id, user_id, coll_day, total_price, item_name, number, notes) VALUES (:item_id, :user_id, :coll_day, :total_price, :item_name, :number, :notes)",
-                                               item_id=seat["item_id"], user_id=session.get("user_id"), coll_day=d2, total_price=seat["total"], item_name=seat["item_name"], number=seat["number"], notes=request.form.get("notes"))
+                            db.execute("INSERT INTO orders (item_id, user_id, coll_day, total_price, item_name, number) VALUES (:item_id, :user_id, :coll_day, :total_price, :item_name, :number)",
+                                               item_id=seat["item_id"], user_id=session.get("user_id"), coll_day=d2, total_price=seat["total"], item_name=seat["item_name"], number=seat["number"])
 
                     # if seats are inserted or not take the item_id between the items that are not seats or event and insert them into database
                     items = db.execute("SELECT item_id, user_id, SUM(total_price) as total, item_name, SUM (number) AS number FROM basket WHERE user_id = :userid AND item_id NOT BETWEEN 6 and 7 GROUP BY item_id", userid=session["user_id"])
                     for item in items:
-                        db.execute("INSERT INTO orders (item_id, user_id, coll_day, total_price, item_name, number, notes) VALUES (:item_id, :user_id, :coll_day, :total_price, :item_name, :number, :notes)",
-                                   item_id=item["item_id"], user_id=session.get("user_id"), coll_day=d2, total_price=item["total"], item_name=item["item_name"], number=item["number"], notes=request.form.get("notes"))
+                        db.execute("INSERT INTO orders (item_id, user_id, coll_day, total_price, item_name, number) VALUES (:item_id, :user_id, :coll_day, :total_price, :item_name, :number)",
+                                   item_id=item["item_id"], user_id=session.get("user_id"), coll_day=d2, total_price=item["total"], item_name=item["item_name"], number=item["number"])
+                    db.execute("INSERT INTO notes (user_id, coll_day, notes) VALUES (:user_id, :coll_day, :notes)", user_id=session.get("user_id"), coll_day=d2, notes=request.form.get("notes"))
                     db.execute("DELETE FROM basket WHERE user_id = :userid", userid = session["user_id"])
-
                     flash(f"Bought! Come and visit us on {d2.day}-{d2.month}-{d2.year}!")
                     return redirect(url_for("orders"))
                 else:
@@ -294,7 +294,7 @@ def basket():
             flash("The date has already passed!")
 
     #auto eliminate items that have 0 as number of them
-    unused = db.execute("SELECT item_id, SUM(number) as number FROM basket WHERE user_id = :userid GROUP BY item_id HAVING number < 0", userid=session["user_id"])
+    unused = db.execute("SELECT item_id, SUM(number) as number FROM basket WHERE user_id = :userid GROUP BY item_id HAVING number = 0", userid=session["user_id"])
     for items in unused:
         db.execute("DELETE FROM basket WHERE item_id = :item_id", item_id=items["item_id"])
     # now can select things to show in basket
@@ -319,7 +319,7 @@ def table():
             if request.form.get("whole"):
                 # I can insert the item 7 straight away because i already know it's event, without pulling from db
                 db.execute("INSERT INTO basket (item_id, user_id, total_price, item_name, number) VALUES(:item_id, :user_id, :total_price, :item_name, :number)",
-                           item_id=7, user_id=session.get("user_id"), total_price=65, item_name="event", number=85)
+                           item_id=7, user_id=session.get("user_id"), total_price=65, item_name="event", number=65)
                 flash("Full restaurant added to your basket, choose your date in the basket page.")
                 return redirect(url_for("table"))
 
@@ -347,12 +347,13 @@ def orders():
     # just be able to see orders
     if session.get("user_id"):
         # could put everything in one line items and day.
-        day = db.execute("SELECT SUM (number) as number, coll_day, SUM (total_price) as totalp_day FROM orders WHERE user_id = :userid GROUP BY coll_day ORDER BY coll_day", userid=session.get("user_id"))
+        day = db.execute("SELECT SUM (number) as number, coll_day, SUM (total_price) as totalp_day, user_id FROM orders WHERE user_id = :userid GROUP BY coll_day ORDER BY coll_day", userid=session.get("user_id"))
         # GROUP_CONCAT is very useful for strings when using GROUP BY. https://stackoverflow.com/questions/149772/how-to-use-group-by-to-concatenate-strings-in-mysql
-        items = db.execute("SELECT SUM(number) as number, item_name, SUM(total_price) as total_price, coll_day, GROUP_CONCAT(DISTINCT notes) as notes FROM orders WHERE user_id = :userid GROUP BY item_id, coll_day ORDER BY item_id", userid=session.get("user_id"))
+        items = db.execute("SELECT SUM(number) as number, item_name, SUM(total_price) as total_price, coll_day FROM orders WHERE user_id = :userid GROUP BY item_id, coll_day ORDER BY item_id", userid=session.get("user_id"))
+        notes = db.execute("SELECT notes, coll_day, user_id FROM notes WHERE user_id=:userid", userid=session.get("user_id"))
         if not day:
             flash("You have no orders to show!")
-        return render_template("orders.html", day=day, items=items)
+        return render_template("orders.html", day=day, items=items, notes=notes)
     else:
         flash("Can't see that page if you are not logged in!")
         return redirect(url_for("login"))
@@ -368,16 +369,20 @@ def admin_orders():
                 now = datetime.now()
                 d1 = datetime.date(now)
                 db.execute("DELETE FROM orders WHERE coll_day < :now", now=d1)
+                flash("Database Cleaned!")
             else:
                 #delete all where the order date corresponds to the button pressed
                 db.execute("DELETE FROM orders WHERE user_id = :userid AND coll_day = :coll_day", userid=request.form.get("userid"), coll_day=request.form.get("date"))
+                db.execute("DELETE FROM notes WHERE user_id = :userid AND coll_day = :coll_day", userid=request.form.get("userid"), coll_day=request.form.get("date"))
+                flash("Order Deleted!")
                 return redirect(url_for("admin_orders"))
         # send the order date grouped by userid and innerjoin users to get the name for user_id
         # innerjoin explained here https://stackoverflow.com/questions/12129757/sql-query-get-name-from-another-table
         # remember that group by multiple items requires a ",""  not an "and"
         day = db.execute("SELECT SUM (t.number) AS number, t.coll_day AS coll_day, SUM (t.total_price) AS totalp_day, t.user_id AS user_id, u.username AS name FROM orders t INNER JOIN users u ON t.user_id = u.id GROUP BY t.user_id, t.coll_day ORDER BY t.coll_day, u.username")
         # same as for orders but needs to be for every person and also grouped by user_id
-        items = db.execute("SELECT user_id, SUM(number) as number, item_name, SUM(total_price) AS total_price, coll_day, GROUP_CONCAT(DISTINCT notes) AS notes FROM orders GROUP BY item_id, coll_day, user_id ORDER BY item_id")
-        return render_template("admin_orders.html", day=day, items=items)
+        items = db.execute("SELECT user_id, SUM(number) as number, item_name, SUM(total_price) AS total_price, coll_day FROM orders GROUP BY item_id, coll_day, user_id ORDER BY item_id")
+        notes = db.execute("SELECT notes, user_id, coll_day FROM notes")
+        return render_template("admin_orders.html", day=day, items=items, notes=notes)
     else:
         return redirect(url_for("index"))

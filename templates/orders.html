@@ -24,11 +24,9 @@
                     <hr>
                     <p>Total <span class="price" style="color:black"><b>{{days.totalp_day | pound}}</b></span></p>
                     <hr>
-                    {% for item in items%}
-                        {% if item.coll_day == days.coll_day%}
-                            {% if item.notes != "Enter text here..." and item.notes != None and item.notes != "          Enter text here..."%}
-                            <p>{{item.notes}}</p>
-                            {% endif %}
+                    {% for note in notes %}
+                        {% if note.coll_day == days.coll_day and note.user_id == days.user_id %}
+                        <p>{{note.notes}}</p>
                         {% endif %}
                     {% endfor %}
                 </div>

@@ -366,7 +366,9 @@ p {
   padding: 7px 0;
   font-size: 24px;
 }
-
+#basket .form-check-input{
+	padding: 12px;
+}
 #basket .btn1 {
   background-color: #4CAF50;
   color: white;

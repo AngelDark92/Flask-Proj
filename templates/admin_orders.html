@@ -3,19 +3,22 @@
 
 {% block main %}
 
-<form action="/admin_orders" method="post" id="forma">
-    <button type="submit" class="btn btn-danger" name="delete" value=1>Delete Obsolete Orders</button>
+<form action="/admin_orders" method="post" id="forma1">
+<button type="submit" class="btn btn-danger" name="delete" value=1>Delete Obsolete Orders</button>
+</form>
+{% for days in day %}
+<form action="/admin_orders" method="post" id="forma2">
     <div id="basket">
-    <div class="row height">
+    <div class="row">
             <div class="col-25">
-                {% for days in day %}
+
                 <div class="container">
-                    <h4>Order {{loop.index}} on the {{days.coll_day}} by {{days.name}}
+                    <h4>{{days.name}}: {{loop.index}} on the {{days.coll_day}}
                     <!-- all going to be used to delete all rows according to selected date and user_id -->
                     <!-- date -->
-                    <input type="hidden" name="date" value={{days.coll_day}}>
+                    <input type="hidden" name="date" value="{{days.coll_day}}">
                     <!-- user_id -->
-                    <button type="submit" class="btn btn-danger" name="userid" value={{days.user_id}}>X</button>
+                    <input type="hidden" name="date" value="{{days.user_id}}">
                     </h4>
                     {% for item in items%}
                         {% if item.coll_day == days.coll_day and item.user_id == days.user_id %}
@@ -25,18 +28,17 @@
                     <hr>
                     <p>Total <span class="price" style="color:black"><b>{{days.totalp_day | pound}}</b></span></p>
                     <hr>
-                    {% for item in items%}
-                        {% if item.coll_day == days.coll_day and item.user_id == days.user_id%}
-                            {% if item.notes != "Enter text here..." and item.notes != None and item.notes != "          Enter text here..."%}
-                            <p>{{item.notes}}</p>
-                            {% endif %}
+                    {% for note in notes %}
+                        {% if note.coll_day == days.coll_day and note.user_id == days.user_id and note.notes %}
+                        <p>{{note.notes}}</p>
                         {% endif %}
                     {% endfor %}
+                <button type="submit" class="btn btn-danger">Delete Selected Order</button>
                 </div>
-                {% endfor %}
         </div>
     </div>
 </div>
 </form>
+{% endfor %}
 
 {% endblock %}
