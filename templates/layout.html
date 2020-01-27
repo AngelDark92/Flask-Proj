@@ -17,8 +17,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <!-- favicon of pizza -->
-    <link rel="icon" href="static/pizza_fav.ico">
-    <title>La Tavernetta - Restaurant, Pizzeria</title>
+    <link rel="icon" href="../static/pizza_fav.ico">
+    <title>La Tavernetta - Tavern and Pizzeria</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
@@ -30,7 +30,7 @@
 <body>
 
     </div>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark main-nav">
+    <nav class="navbar navbar-expand-md navbar-light main-nav" style="background-color: #ff9933;">
         <div class="container">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="navbar-toggler-icon"></span>
@@ -40,14 +40,27 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="/">Home</a>
                     </li>
+
+                    {% if session.get("user_id") == None%}
                     <li class="nav-item">
                         <a class="nav-link" href="/menu">Menu</a>
                     </li>
+                    {% elif session.get("user_id") > 1 %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/table">Tables</a>
+                        <a class="nav-link" href="/menu">Menu</a>
                     </li>
+                    {% endif %}
+
+                    {% if not session.user_id %}
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="alert('You need to register or login to make a reservation.')">Eat In</a>
+                    </li>
+                    {% endif %}
                     <!-- if the user id is 1 get the right buttons to show -->
                     {% if session.get("user_id") and session.get("user_id") > 1 %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/table">Eat In</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/orders">My Orders</a>
                     </li>
@@ -109,10 +122,60 @@
             {% block main %}{% endblock %}
         </main>
 
-        <footer class="small text-center text-muted">
-            Contact us. <a href="mailto: angelodark92@gmail.com">Email, &nbsp;</a><a href="tel:0961923680">Phone, &nbsp;</a>
-        </footer>
+<!-- https://bootsnipp.com/snippets/D0ZdG -->
+<footer class="-bg-footer" id="footer">
+        <div class="container-fluid">
+            <div class="row footer-align">
+                <div class="col-md-4 col-sm-4">
+                    <h5>La Tavernetta</h5>
+                    <hr class="hr-foot">
+                    <div class="footer-items">
+                        <p class="footer">
+                            Tipica trattoria calabrese. Piatti caserecci come da vera tradizione silana.
+                        </p>
+                        <ul class="social-networks">
+                            <a href="https://www.facebook.com/latavernettatrattoria" class="facebook"><i class="fa fa-facebook"></i></a>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <h5>Our contact</h5>
+                    <hr class="hr-foot">
+                    <div class="footer-items">
+                        <address>
+                                Via Beato Pirro Poerio, 18
+                                <br>
+                                88055 Taverna CZ
+                                <br>
+                                Italy
+                                <br>
+                                <i class="fa fa-phone address"></i> +39 0961 921198
+                                <br>
+                                <i class="fa fa-envelope address"></i> <a href="angelodark92@gmail.com">angelodark92@gmail.com</a>
+                        </address>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <h5>Open hours</h5>
+                    <hr class="hr-foot">
+                    <div class="footer-items">
+                        <ul>
+                            <li>Tue-Sun: 19:00-00:00</li>
+                            <li>Mon    : Closed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <a class="to-top" href="#myPage" title="toTop">
+            <i class="fa fa-chevron-up"></i>
+        </a>
+    </footer>
+
+    <div class="footer-copyright">
+            <p>&copy 2018 Copyright by  <a href="https://github.com/anttnew"> https://github.com/anttnew</a></p>
+    </div>
 </body>
 
 </html>

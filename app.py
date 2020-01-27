@@ -6,6 +6,7 @@ from datetime import datetime
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
+from datetime import datetime
 
 # Some code coming from CS50 Finance assignement
 
@@ -21,13 +22,16 @@ Session(app)
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
+
 # definition of value in £
 def pound(value):
     """Format value as Pound."""
-    return f"£ {value:,.2f}"
+    return f"£{value:,.2f}"
+
 
 # importing definition in jinja
 app.jinja_env.filters["pound"] = pound
+
 
 def login_required(f):
     """
@@ -87,7 +91,7 @@ def logout():
     session.clear()
     flash("You have been logged out!")
     # Redirect to the homepage
-    return redirect (url_for("index"))
+    return redirect(url_for("index"))
 
 
 @app.route("/check/", methods=["GET"])
@@ -144,25 +148,6 @@ def register():
         return render_template("register.html")
 
 
-@app.route("/admin_orders/", methods=["GET", "POST"])
-@login_required
-def admin_orders():
-    if session["user_id"] == 1:
-        if request.method == "GET":
-            return render_template("admin_orders.html")
-    else:
-        return redirect(url_for("index"))
-
-
-@app.route("/clear_orders/", methods=["GET", "POST"])
-@login_required
-def clear_orders():
-    if session["user_id"] == 1:
-        if request.method == "GET":
-            return render_template("admin_orders.html")
-    else:
-        return redirect(url_for("index"))
-
 @app.route("/passw/", methods=["GET", "POST"])
 @login_required
 def passw():
@@ -203,48 +188,196 @@ def passw():
     return render_template("passw.html")
 
 
-@app.route("/")
+@app.route("/menu/", methods=["GET", "POST"])
+def menu():
+    # be able to see menu and put items in basket
+    if request.method == "POST":
+
+        # check if entered data is int
+        if session.get("user_id") and isinstance(int(request.form.get("num")), int):
+            #retreive item name and print name and number of that item bought
+            item_id = int(request.form.get("item"))
+            num = int(request.form.get("num"))
+            item = db.execute("SELECT name, available, price FROM items WHERE id = :item_id ", item_id=item_id)
+
+            # final price for the number of items
+            final_price = (int(item[0]["price"])) * num
+
+            if int(item[0]["available"]) != 0:
+
+                db.execute("INSERT INTO basket (item_id, user_id, total_price, item_name, number) VALUES(:item_id, :user_id, :total_price, :item_name, :number)",
+                           item_id=item_id, user_id=session.get("user_id"), total_price=final_price, item_name=item[0]["name"], number=num)
+                curr_num = db.execute("SELECT available FROM items WHERE id = :item_id", item_id=item_id)
+                db.execute("UPDATE items SET available = :num_decrease WHERE id = :item_id", num_decrease=(int(curr_num[0]["available"]))-num, item_id=item_id)
+                flash(f"{num} {item[0]['name']} added to your basket")
+
+            else:
+                flash(f"No {item[0]['name']}s available!")
+                return redirect(url_for("menu"))
+        else:
+            flash(request.form.get("num"))
+            flash("Can't do that!")
+
+    items = db.execute("SELECT id, name, price, description, img FROM items WHERE id IN (0, 1, 2, 3, 4, 5) ORDER BY id")
+    return render_template("menu.html", items=items)
+
+
+@app.route("/", methods=["GET", "POST"])
 def index():
-    # Todo
-    return render_template ("index.html")
+    # main page of restaurant get number of items and add or remove them
+    if request.method == "POST":
+        if session.get("user_id") == 1:
+            item_id = int(request.form.get("item"))
+            num = int(request.form.get("num"))
+            curr_num = db.execute("SELECT available, name FROM items WHERE id = :item_id", item_id=item_id)
+            # final number for correct items
+            num2 = (int(curr_num[0]["available"])) + num
+            db.execute("UPDATE items SET available = :num2 WHERE id = :item_id", num2=num2, item_id=item_id)
+            flash(f"{num} added to available {curr_num[0]['name']}s")
+            return redirect(url_for("index"))
+        else:
+            flash("Can't do that!")
+    items = db.execute("SELECT id, name, available, description, img FROM items WHERE id IN (0, 1, 2, 3, 4, 5) ORDER BY id")
+    return render_template("index.html", items=items)
 
 
-@app.route("/table/")
-def table():
-    # Todo
-    return render_template ("table.html")
-
-
-@app.route("/basket/")
+@app.route("/basket/", methods=["GET", "POST"])
 @login_required
 def basket():
-    # Todo
-    return render_template ("basket.html")
+    # be able to see basket, delete items if needed and buy them to be stored in orders
+    # today's date to display and to check
+    now = datetime.now()
+    if request.method == "POST":
+        # submit everything to orders and delete everything from basket
+        # d1 from datetime.date gives yyyy-mm-dd
+        d1 = datetime.date(now)
+        # d2 from html gives back format yyyy-mm-dd
+        d2_dirty = datetime.strptime(request.form.get("date"), '%Y-%m-%d')
+        d2 = datetime.date(d2_dirty)
+        if d2 >= d1:
+            # first check if there are any items
+            items2 = db.execute("SELECT item_id, user_id, SUM(total_price) as total, item_name, SUM (number) AS number FROM basket WHERE user_id = :userid GROUP BY item_id", userid=session["user_id"])
+
+            if items2:
+                #add all the items numbers first:
+                num = 0
+                for items in items2:
+                    num += int(items["number"])
+                #check if the seats on that date are already all taken
+                seats_taken = db.execute("SELECT SUM(number) as taken FROM orders WHERE coll_day = :coll_day AND item_id BETWEEN 6 AND 7", coll_day=d2)
+                #if seats taken is already null assign it an integer 0 so that operations can be made
+                if seats_taken[0]["taken"] == None:
+                    seats_taken[0]["taken"] = 0
+                if (seats_taken[0]["taken"] + num) <= 85:
+                    # if there are take the seats and insert them
+                    seats = db.execute("SELECT item_id, user_id, SUM(total_price) as total, item_name, SUM (number) AS number FROM basket WHERE user_id = :userid AND item_id BETWEEN 6 AND 7 GROUP BY item_id", userid=session["user_id"])
+                    if seats:
+                        for seat in seats:
+                            db.execute("INSERT INTO orders (item_id, user_id, coll_day, total_price, item_name, number, notes) VALUES (:item_id, :user_id, :coll_day, :total_price, :item_name, :number, :notes)",
+                                               item_id=seat["item_id"], user_id=session.get("user_id"), coll_day=d2, total_price=seat["total"], item_name=seat["item_name"], number=seat["number"], notes=request.form.get("notes"))
+
+                    # if seats are inserted or not take the item_id between the items that are not seats or event and insert them into database
+                    items = db.execute("SELECT item_id, user_id, SUM(total_price) as total, item_name, SUM (number) AS number FROM basket WHERE user_id = :userid AND item_id NOT BETWEEN 6 and 7 GROUP BY item_id", userid=session["user_id"])
+                    for item in items:
+                        db.execute("INSERT INTO orders (item_id, user_id, coll_day, total_price, item_name, number, notes) VALUES (:item_id, :user_id, :coll_day, :total_price, :item_name, :number, :notes)",
+                                   item_id=item["item_id"], user_id=session.get("user_id"), coll_day=d2, total_price=item["total"], item_name=item["item_name"], number=item["number"], notes=request.form.get("notes"))
+                    db.execute("DELETE FROM basket WHERE user_id = :userid", userid = session["user_id"])
+
+                    flash(f"Bought! Come and visit us on {d2.day}-{d2.month}-{d2.year}!")
+                    return redirect(url_for("orders"))
+                else:
+                    db.execute("DELETE FROM basket WHERE user_id = :userid AND item_id BETWEEN 6 AND 7", userid=session["user_id"])
+                    flash(f"Max number of seats (85) is being surpassed with your purchase. Current number of taken seats are {seats_taken[0]['taken']}. Please select a different number of seats.")
+            else:
+                flash("Can't check out with no items in shopping cart!")
+        else:
+            flash("The date has already passed!")
+
+    #auto eliminate items that have 0 as number of them
+    unused = db.execute("SELECT item_id, SUM(number) as number FROM basket WHERE user_id = :userid GROUP BY item_id HAVING number < 0", userid=session["user_id"])
+    for items in unused:
+        db.execute("DELETE FROM basket WHERE item_id = :item_id", item_id=items["item_id"])
+    # now can select things to show in basket
+    bought = db.execute("SELECT SUM(total_price) as total, item_name, SUM(number) as number, item_id FROM basket WHERE user_id = :userid GROUP BY item_id", userid=session["user_id"])
+    if not bought:
+        flash("Your basket is empty!")
+    final_price = 0
+    item_no = 0
+    for items in bought:
+        final_price += (int(items["total"]))
+        item_no += 1
+    return render_template("basket.html", bought=bought, final_price=final_price, item_no=item_no, now=now)
 
 
-@app.route("/menu/")
-def menu():
-    # Todo
-    return render_template ("menu.html")
+@app.route("/table/", methods=["GET", "POST"])
+def table():
+    # be able to select seats or book for event and put items in basket
+    if request.method == "POST":
+        # check if entered data is int or if data i entered at all
+        if session.get("user_id") != None and (request.form.get("seats") or request.form.get("whole")):
+            #check if whole is entered otherwise go to table
+            if request.form.get("whole"):
+                # I can insert the item 7 straight away because i already know it's event, without pulling from db
+                db.execute("INSERT INTO basket (item_id, user_id, total_price, item_name, number) VALUES(:item_id, :user_id, :total_price, :item_name, :number)",
+                           item_id=7, user_id=session.get("user_id"), total_price=65, item_name="event", number=85)
+                flash("Full restaurant added to your basket, choose your date in the basket page.")
+                return redirect(url_for("table"))
+
+            #no if needed for the number of seats, all the checks already present
+            try:
+                num = int(request.form.get("seats"))
+                # final price for the number of items, I already know each seat is 1 £
+                final_price = 1 * num
+                db.execute("INSERT INTO basket (item_id, user_id, total_price, item_name, number) VALUES(:item_id, :user_id, :total_price, :item_name, :number)",
+                           item_id=6, user_id=session.get("user_id"), total_price=final_price, item_name="Seats", number=num)
+                flash(f"{num} seats added to your basket, choose your date in the basket page.")
+                return redirect(url_for("table"))
+            except:
+                flash("Input needs to be a number!")
+
+        else:
+            flash("Can't do that, there is no data or user logged in!")
+
+    return render_template("table.html")
 
 
-@app.route("/orders/")
+@app.route("/orders/", methods=["GET", "POST"])
 @login_required
 def orders():
-    # Todo
-    return render_template ("orders.html")
+    # just be able to see orders
+    if session.get("user_id"):
+        # could put everything in one line items and day.
+        day = db.execute("SELECT SUM (number) as number, coll_day, SUM (total_price) as totalp_day FROM orders WHERE user_id = :userid GROUP BY coll_day ORDER BY coll_day", userid=session.get("user_id"))
+        # GROUP_CONCAT is very useful for strings when using GROUP BY. https://stackoverflow.com/questions/149772/how-to-use-group-by-to-concatenate-strings-in-mysql
+        items = db.execute("SELECT SUM(number) as number, item_name, SUM(total_price) as total_price, coll_day, GROUP_CONCAT(DISTINCT notes) as notes FROM orders WHERE user_id = :userid GROUP BY item_id, coll_day ORDER BY item_id", userid=session.get("user_id"))
+        if not day:
+            flash("You have no orders to show!")
+        return render_template("orders.html", day=day, items=items)
+    else:
+        flash("Can't see that page if you are not logged in!")
+        return redirect(url_for("login"))
 
 
-def errorhandler(e):
-    """Handle error"""
-    if not isinstance(e, HTTPException):
-        e = InternalServerError()
-    return flash(e.name, e.code)
-
-
-# Listen for errors
-for code in default_exceptions:
-    app.errorhandler(code)(errorhandler)
-
-if __name__ == "__main__":
-    app.run(debug = True)
+@app.route("/admin_orders/", methods=["GET", "POST"])
+@login_required
+def admin_orders():
+    # being able to see all orders from people ordered by name and being able to delete them
+    if session["user_id"] == 1:
+        if request.method == "POST":
+            if request.form.get("delete"):
+                now = datetime.now()
+                d1 = datetime.date(now)
+                db.execute("DELETE FROM orders WHERE coll_day < :now", now=d1)
+            else:
+                #delete all where the order date corresponds to the button pressed
+                db.execute("DELETE FROM orders WHERE user_id = :userid AND coll_day = :coll_day", userid=request.form.get("userid"), coll_day=request.form.get("date"))
+                return redirect(url_for("admin_orders"))
+        # send the order date grouped by userid and innerjoin users to get the name for user_id
+        # innerjoin explained here https://stackoverflow.com/questions/12129757/sql-query-get-name-from-another-table
+        # remember that group by multiple items requires a ",""  not an "and"
+        day = db.execute("SELECT SUM (t.number) AS number, t.coll_day AS coll_day, SUM (t.total_price) AS totalp_day, t.user_id AS user_id, u.username AS name FROM orders t INNER JOIN users u ON t.user_id = u.id GROUP BY t.user_id, t.coll_day ORDER BY t.coll_day, u.username")
+        # same as for orders but needs to be for every person and also grouped by user_id
+        items = db.execute("SELECT user_id, SUM(number) as number, item_name, SUM(total_price) AS total_price, coll_day, GROUP_CONCAT(DISTINCT notes) AS notes FROM orders GROUP BY item_id, coll_day, user_id ORDER BY item_id")
+        return render_template("admin_orders.html", day=day, items=items)
+    else:
+        return redirect(url_for("index"))

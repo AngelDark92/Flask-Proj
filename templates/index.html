@@ -5,7 +5,98 @@
 {% endblock %}
 
 {% block main %}
+<!-- https://bootsnipp.com/snippets/VvP8d -->
+<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,900" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oleo+Script" rel="stylesheet">
 
-<!-- TODO -->
+{% if session.get("user_id") == None or session.get("user_id") > 1 %}
+<section class="services pt-60 pb-60 height" id="services">
+         <div class="container">
+            <div class="row">
+               <div class="col-xl-12">
+                  <div class="section-title text-center mb-60">
+                     <p>Best place for friends & family</p>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-4 col-sm-12">
+                  <div class="single_service service_right">
+                     <img src="http://infinityflamesoft.com/html/restarunt-preview/assets/img/services/service-1.png" alt="">
+                     <h4>Online Reservations</h4>
+                     <p>You can reserve seats or food from the menu online.</p>
+                  </div>
+                  <div class="single_service service_right">
+                     <img src="http://infinityflamesoft.com/html/restarunt-preview/assets/img/services/service-2.png" alt="">
+                     <h4>Popular Dishes</h4>
+                     <p>Check our menu for all the dishes available.</p>
+                  </div>
+                  <div class="single_service service_right">
+                     <img src="http://infinityflamesoft.com/html/restarunt-preview/assets/img/services/service-3.png" alt="">
+                     <h4>Pizza and Tavern</h4>
+                     <p>Pizzeria and Tavern foods for your dinner.</p>
+                  </div>
+               </div>
+               <div class="col-md-4 col-sm-12 text-center">
+                  <div class="single_mid">
+                     <img src="../static/latavernetta.jpg" alt="">
+                  </div>
+               </div>
+               <div class="col-md-4 col-sm-12">
+                  <div class="single_service">
+                     <img src="http://infinityflamesoft.com/html/restarunt-preview/assets/img/services/service-4.png" alt="">
+                     <h4>Dinner Service</h4>
+                     <p>We provide services for your dinner.</p>
+                  </div>
+                  <div class="single_service">
+                     <img src="http://infinityflamesoft.com/html/restarunt-preview/assets/img/services/service-5.png" alt="">
+                     <h4>Candle Light Dinner</h4>
+                     <p>Dinner by candlelight at our restaurant.</p>
+                  </div>
+                  <div class="single_service">
+                     <img src="http://infinityflamesoft.com/html/restarunt-preview/assets/img/services/service-6.png" alt="">
+                     <h4>Special Local Foods</h4>
+                     <p>Our special local food is cooked with healthy recipes and homegrown ingredients.</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+{% endif %}
+
+<!-- remember name is what is being passed to flask -->
+{% if session.get("user_id") == 1 %}
+	<section class="menu_list mt-60 mb-60 height">
+	 <div class="container">
+		<div class="row">
+		   <div class="tab-content col-xl-12" id="myTabContent">
+			  <div class="tab-pane fade active show" id="dinner" role="tabpanel" aria-labelledby="dinner-tab">
+				 <h4>Add more items as available.</h4>
+				 <div class="row">
+					{% for items in items %}
+					<div class="col-md-6">
+					   <div class="single_menu_list">
+						  <!-- https://www.w3schools.com/bootstrap/bootstrap_collapse.asp -->
+						  <img src="{{items.img}}" alt="" data-toggle="collapse" data-target="#demo{{items.id}}">
+						  <div class="menu_content">
+							 <h4>{{items.name}}<span>{{items.available}}</span> available.</h4>
+							 <p class="collapse" id="demo{{items.id}}">{{items.description}}</p>
+								{% if session.user_id %}
+								<form action="/" method="post" class="needs-validation" novalidate>
+								<input autocomplete="off" autofocus class="form-control" value="1" name="num" placeholder="1" type="text" id="validationCustom01" required>
+								<button name="item" type="submit" class="btn btn-default btn-sm" value="{{items.id}}"><span class="glyphicon glyphicon-shopping-cart"></span>Add</button>
+								</form>
+								{% endif %}
+						  </div>
+					   </div>
+					</div>
+					{% endfor %}
+				 </div>
+			  </div>
+		   </div>
+		</div>
+	 </div>
+  </section>
+{% endif %}
 
 {% endblock %}

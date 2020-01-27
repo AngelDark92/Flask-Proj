@@ -3,6 +3,40 @@
 
 {% block main %}
 
-Hello admin {{ 3 | pound }}
+<form action="/admin_orders" method="post" id="forma">
+    <button type="submit" class="btn btn-danger" name="delete" value=1>Delete Obsolete Orders</button>
+    <div id="basket">
+    <div class="row height">
+            <div class="col-25">
+                {% for days in day %}
+                <div class="container">
+                    <h4>Order {{loop.index}} on the {{days.coll_day}} by {{days.name}}
+                    <!-- all going to be used to delete all rows according to selected date and user_id -->
+                    <!-- date -->
+                    <input type="hidden" name="date" value={{days.coll_day}}>
+                    <!-- user_id -->
+                    <button type="submit" class="btn btn-danger" name="userid" value={{days.user_id}}>X</button>
+                    </h4>
+                    {% for item in items%}
+                        {% if item.coll_day == days.coll_day and item.user_id == days.user_id %}
+                        <p>{{item.number}} x {{item.item_name}} <span class="price">{{item.total_price | pound}}</span></p>
+                        {% endif %}
+                    {% endfor %}
+                    <hr>
+                    <p>Total <span class="price" style="color:black"><b>{{days.totalp_day | pound}}</b></span></p>
+                    <hr>
+                    {% for item in items%}
+                        {% if item.coll_day == days.coll_day and item.user_id == days.user_id%}
+                            {% if item.notes != "Enter text here..." and item.notes != None and item.notes != "          Enter text here..."%}
+                            <p>{{item.notes}}</p>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+</form>
 
 {% endblock %}

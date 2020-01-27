@@ -5,7 +5,108 @@
 {% endblock %}
 
 {% block main %}
+<!-- https://www.w3schools.com/howto/howto_css_checkout_form.asp -->
+<section class="menu_list mt-60 mb-60">
+	 <div class="container">
+		<div class="row">
+		   <div class="col-xl-12">
+			  <div class="section-title text-center mb-60">
+				 <h4>Your Basket</h4>
+				 <p>Remove items by writing a negative number on the desired item in the <a href="/admin_orders">menu</a> page.</p>
+			  </div>
+		   </div>
+		</div>
+	</div>
+</section>
+<div id="basket">
+    <div class="row height">
+  <div class="col-75">
+    <div class="container">
+      <form action="/basket" method="post" id="forma">
 
-<!-- TODO -->
+        <div class="row">
+          <div class="col-50">
+            <h3>Billing Address</h3>
+            <label for="fname"><i class="fa fa-user"></i> Full Name</label>
+            <input type="text" id="fname" name="firstname" placeholder="John M. Doe">
+            <label for="email"><i class="fa fa-envelope"></i> Email</label>
+            <input type="text" id="email" name="email" placeholder="john@example.com">
+            <label for="adr"><i class="fa fa-address-card-o"></i> Address</label>
+            <input type="text" id="adr" name="address" placeholder="542 W. 15th Street">
+            <label for="city"><i class="fa fa-institution"></i> City</label>
+            <input type="text" id="city" name="city" placeholder="New York">
+
+            <div class="row">
+              <div class="col-50">
+                <label for="state">State</label>
+                <input type="text" id="state" name="state" placeholder="NY">
+              </div>
+              <div class="col-50">
+                <label for="zip">Zip</label>
+                <input type="text" id="zip" name="zip" placeholder="10001">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-50">
+            <h3>Payment</h3>
+            <label for="fname">Accepted Cards</label>
+            <div class="icon-container">
+              <i class="fa fa-cc-visa" style="color:navy;"></i>
+              <i class="fa fa-cc-amex" style="color:blue;"></i>
+              <i class="fa fa-cc-mastercard" style="color:red;"></i>
+              <i class="fa fa-cc-discover" style="color:orange;"></i>
+            </div>
+            <label for="cname">Name on Card</label>
+            <input type="text" id="cname" name="cardname" placeholder="John More Doe">
+            <label for="ccnum">Credit card number</label>
+            <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444">
+            <label for="expmonth">Exp Month</label>
+            <input type="text" id="expmonth" name="expmonth" placeholder="September">
+
+            <div class="row">
+              <div class="col-50">
+                <label for="expyear">Exp Year</label>
+                <input type="text" id="expyear" name="expyear" placeholder="2018">
+              </div>
+              <div class="col-50">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" name="cvv" placeholder="352">
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <label>
+          <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
+        </label>
+        <h3>Collection date: </h3>
+        <input name="date" type="date" id="start" name="trip-start" required>
+        <input type="submit" value="Checkout" class="btn1">
+      </form>
+      <h3>Notes (Special Orders or modifications):</h3>
+        <textarea rows="4" cols="50" name="notes" form="forma" value=NULL></textarea>
+
+    </div>
+  </div>
+
+  <div class="col-25">
+    <div class="container">
+      <h4>Cart
+        <span class="price" style="color:black">
+          <i class="fa fa-shopping-cart"></i>
+          <b>{{ item_no }}</b>
+        </span>
+      </h4>
+      {% for items in bought %}
+      <p>{{ items.number }} x {{ items.item_name }} <span class="price">{{ items.total | pound}}</span></p>
+      <hr>
+      {% endfor %}
+      <p>Total <span class="price" style="color:black"><b>{{ final_price | pound }}</b></span></p>
+
+    </div>
+  </div>
+  </div>
+</div>
 
 {% endblock %}

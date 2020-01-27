@@ -6,6 +6,15 @@ main .form-control {
     /* override Bootstrap's 100% width for form controls */
     width: auto;
 }
+.height {
+	height: 100vh;
+}
+
+/* change the brand and text color */
+.navbar-default .navbar-brand {
+    color: white;
+    font-size: 25px;
+  }
 
 main {
     /* scroll horizontally as needed */
@@ -17,4 +26,374 @@ main {
 main img {
     /* constrain images on small screens */
     max-width: 100%;
+}
+
+body {
+	font-family: 'Montserrat', sans-serif;
+	color: #333;
+	line-height: 1.6;
+}
+.mb-60 {
+	margin-bottom: 60px;
+}
+.section-title p {
+	font-size: 24px;
+	font-family: Oleo Script;
+	margin-bottom: 0px;
+}
+
+.single_menu_list img {
+	cursor: pointer;
+}
+.section-title h4 {
+	font-size: 40px;
+	text-transform: capitalize;
+	color: #FF5E18;
+	position: relative;
+	display: inline-block;
+	padding-bottom: 25px;
+}
+.section-title h4::before {
+	width: 80px;
+	height: 1.5px;
+	bottom: 0;
+	left: 50%;
+	margin-left: -40px;
+}
+.section-title h4::before, .section-title h4::after {
+	position: absolute;
+	content: "";
+	background-color: #FF5E18;
+}
+#myTabContent {
+	margin-top: 50px;
+}
+.menu_tab {
+	width: auto;
+	margin: 0 auto;
+}
+.nav-tabs .nav-item {
+	margin-bottom: -1px;
+}
+.nav-item a {
+	color: #333;
+}
+.menu_tab .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+	color: white;
+	background-color: #FF5E18;
+	border-color: #FF5E18;
+}
+.single_menu_list {
+	position: relative;
+	padding-left: 190px;
+	margin-bottom: 110px;
+}
+
+.single_menu_list img {
+	max-width: 30%;
+	position: absolute;
+	left: 0px;
+	top: 0;
+	border: 1px solid #ddd;
+	padding: 3px;
+	border-radius: 50%;
+	transition: .4s
+}
+
+.single_menu_list:hover img {
+	border-radius: 0;
+	transition: .4s
+}
+
+.single_menu_list h4 {
+	font-size: 20px;
+	border-bottom: 1px dashed #333;
+	padding-bottom: 15px;
+	margin-bottom: 10px;
+}
+
+.single_menu_list h4 span {
+	float: right;
+	font-weight: bold;
+	color: #FF5E18;
+	font-style: italic;
+}
+.pb-60 {
+	padding-bottom: 60px;
+}
+.pt-60 {
+	padding-top: 60px;
+}
+.mb-60 {
+	margin-bottom: 60px;
+}
+p {
+	font-weight: 300;
+	font-size: 14px;
+}
+.section-title p {
+	font-size: 24px;
+	font-family: Oleo Script;
+	margin-bottom: 0px;
+}
+.section-title h3 {
+	font-size: 24px;
+	font-family: Zhi Mang Xing;
+	margin-bottom:0px;
+	text-shadow: 4px 4px 4px #aaa;
+}
+.section-title h4 {
+	font-size: 40px;
+	text-transform: capitalize;
+	color: #FF5E18;
+	position: relative;
+	display: inline-block;
+	padding-bottom: 25px;
+}
+.section-title h4::before {
+	width: 80px;
+	height: 1.5px;
+	bottom: 0;
+	left: 50%;
+	margin-left: -40px;
+}
+.section-title h4::before, .section-title h4::after {
+	position: absolute;
+	content: "";
+	background-color: #FF5E18;
+}
+.section-title h4::after {
+	width: 40px;
+	height: 1.5px;
+	bottom: -5px;
+	left: 50%;
+	margin-left: -20px;
+}
+.single_service.service_right {
+	padding-right: 70px;
+	padding-left: 0;
+	text-align: right;
+}
+.single_service.service_right img {
+	right: 0;
+	left: auto;
+	margin-top: 0;
+}
+.single_service:nth-child(1), .single_service:nth-child(2) {
+	border-bottom: 1px dashed #333;
+	padding-bottom: 15px;
+}
+.single_service img {
+	max-width: 45px;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.single_service {
+	position: relative;
+	padding-left: 70px;
+	margin-bottom: 35px;
+}
+
+/* ***** Footer ***** */
+
+#footer {
+	background-color: #182c39;
+	color: white;
+	font-family: 'Roboto', sans-serif;
+}
+
+#footer ul {
+	list-style-type: none;
+	padding-left: 0;
+	line-height: 2.2;
+}
+
+#footer h5 {
+	font-size: 18px;
+	color: white;
+	margin-top: 40px;
+	margin-bottom: 10px;
+	text-transform: uppercase;
+	margin-left: 4em;
+}
+
+#footer a {
+	color: #aaa;
+}
+
+#footer a:hover,
+#footer a:focus {
+	text-decoration: none;
+	color: white;
+}
+
+#footer .social-networks {
+	padding-top: 20px;
+	padding-bottom: 25px;
+}
+
+#footer .footer-items .fa {
+	font-size: 17px;
+	margin-bottom: 5px;
+	background-color: white;
+	color: #182c39;
+	border-radius: 50%;
+	padding-bottom: 25px;
+	height: 30px;
+	width: 30px;
+	text-align: center;
+	line-height: 31px;
+	text-decoration: none;
+	transition: color 1s;
+}
+
+#footer .footer-items {
+	margin: auto;
+	padding-left: 70px;
+	font-size: 15px;
+}
+
+#footer .fa-facebook:hover,
+#footer .fa-instagram:hover {
+	border: 1px solid #fff;
+	color: #fff;
+	background-color: #182c39;
+}
+
+
+.footer-copyright {
+	background-color: #10222e;
+}
+
+.footer-copyright p {
+	text-align: center;
+	color: #ccc;
+	font-size: 15px;
+	padding: 10px 0;
+	margin-bottom: 0;
+}
+
+#footer .hr-foot {
+	width: 80%;
+  	margin: 10px auto;
+  	border: 1px solid #fff;
+}
+
+#footer .to-top {
+	color: #fff;
+	font-size: 30px;
+	position: fixed;
+	right: 12px;
+	bottom: 12px;
+	height: 40px;
+	width: 40px;
+	text-decoration: none;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	text-align: center;
+	background: rgba(0, 0, 0, 0.5);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#footer .to-top:hover {
+	background-color: #222;
+	color: #fff;
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
+	transition: all 1s ease;
+}
+
+/* for basket.html */
+#basket .row {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  -ms-flex-wrap: wrap; /* IE10 */
+  flex-wrap: wrap;
+  margin: 0 -16px;
+}
+#basket .h {
+	text-align: left;
+}
+
+#basket .col-25 {
+  -ms-flex: 25%; /* IE10 */
+  flex: 25%;
+}
+
+#basket .col-50 {
+  -ms-flex: 50%; /* IE10 */
+  flex: 50%;
+}
+
+#basket .col-75 {
+  -ms-flex: 75%; /* IE10 */
+  flex: 75%;
+}
+
+#basket .col-25,
+#basket .col-50,
+#basket .col-75 {
+  padding: 0 16px;
+}
+
+#basket .container {
+  background-color: #f2f2f2;
+  padding: 5px 20px 15px 20px;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+}
+
+#basket input[type=text] {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+#basket label {
+  margin-bottom: 10px;
+  display: block;
+}
+
+#basket .icon-container {
+  margin-bottom: 20px;
+  padding: 7px 0;
+  font-size: 24px;
+}
+
+#basket .btn1 {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  width: 100%;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+#basket .btn1:hover {
+  background-color: #45a049;
+}
+
+#basket span.price {
+  float: right;
+  color: grey;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (and change the direction - make the "cart" column go on top) */
+@media (max-width: 800px) {
+  .row {
+    flex-direction: column-reverse;
+  }
+  .col-25 {
+    margin-bottom: 20px;
+  }
 }

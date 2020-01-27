@@ -1,5 +1,41 @@
-{% extends "layout.html" %} {% block title %} Index {% endblock %} {% block main %}
+{% extends "layout.html" %}
 
-<!-- TODO -->
+{% block title %} Index {% endblock %}
+
+{% block main %}
+
+<div id="basket">
+    <div class="row height">
+            <div class="col-25">
+                {% for days in day %}
+                <div class="container">
+                    <h4><p><strong>Order: {{loop.index}}</strong></p>Collection: {{days.coll_day}}
+                    <span class="price" style="color:black">
+                    <i class="fa fa-shopping-cart"></i>
+
+                    <b>{{days.number}} Items</b>
+                    </span>
+                    </h4>
+                    {% for item in items%}
+                        {% if item.coll_day == days.coll_day %}
+                        <p>{{item.number}} x {{item.item_name}} <span class="price">{{item.total_price | pound}}</span></p>
+                        {% endif %}
+                    {% endfor %}
+                    <hr>
+                    <p>Total <span class="price" style="color:black"><b>{{days.totalp_day | pound}}</b></span></p>
+                    <hr>
+                    {% for item in items%}
+                        {% if item.coll_day == days.coll_day%}
+                            {% if item.notes != "Enter text here..." and item.notes != None and item.notes != "          Enter text here..."%}
+                            <p>{{item.notes}}</p>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}

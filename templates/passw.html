@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block main %}
-<form action="/passw" method="post" onSubmit = "return checkPassword(this)" class="needs-validation" novalidate>
+
+<div class="height">
+    <form action="/passw" method="post" onSubmit = "return checkPassword(this)" class="needs-validation" novalidate>
     <div class="form-group">
         <input autocomplete="off" autofocus class="form-control" name="old_pw" placeholder="Old Password" type="password" id="validationCustom01" required>
     </div>
@@ -17,7 +19,7 @@
     </div>
     <button class="btn btn-primary" type="submit">Change</button>
 </form>
-
+</div>
 
 <script>
 // Script imported from bootstrap validation page

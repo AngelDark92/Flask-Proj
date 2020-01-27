@@ -5,7 +5,53 @@
 {% endblock %}
 
 {% block main %}
+<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,900" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oleo+Script" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Zhi+Mang+Xing">
 
-<!-- TODO -->
+<div class="row height">
+    <div class="col-xl-12">
+        <div class="section-title text-center mb-60">
+            <h4>Order your number of seats needed here</h4>
+            <p>You can choose the date in the basket</p>
+            <form action="/table" method="post" class="needs-validation" novalidate>
+                <div class="form-group">
+                    <input autocomplete="off" autofocus class="form-control" name="seats" placeholder="Number of seats" type="number" min="1" max="85" id="validationCustom02" required>
+                </div>
+                    <input type="checkbox" name="whole" value="1" id="check"><h3>Whole Space 85 people (for big events)</h3> <hr>
 
+                <button class="btn btn-primary" type="submit">Add to Basket</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+// Script imported from bootstrap validation page
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+$(function(){
+   $('#check').on('click', function(){
+      $('#validationCustom02').attr('disabled', $(this).is(':checked'));
+   });
+});
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
 {% endblock %}
