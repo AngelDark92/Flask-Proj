@@ -199,7 +199,7 @@ def menu():
             item_id = int(request.form.get("item"))
             num = int(request.form.get("num"))
             item = db.execute("SELECT name, available, price FROM items WHERE id = :item_id ", item_id=item_id)
-
+##### need to update this to not allow negative numbers. Remember to update the basket to allow the user to change number of items
             # final price for the number of items
             final_price = (int(item[0]["price"])) * num
 
