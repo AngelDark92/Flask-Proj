@@ -9,7 +9,7 @@
 
 
 [![Build Status](http://img.shields.io/travis/badges/badgerbadgerbadger.svg?style=flat-square)](https://travis-ci.org/badges/badgerbadgerbadger)
-
+[![Open Source Society University - Computer Science](https://img.shields.io/badge/OSSU-computer--science-blue.svg)](https://github.com/ossu/computer-science)
 
 ![Imgur GIF](https://i.imgur.com/7Akpl5K.gif)
 ![Imgur GIF 2](https://i.imgur.com/am51jBZ.gif)
