@@ -62,6 +62,13 @@ requests
 - Admin can clean the orders for dates previous than the current one automatically.
 - Admin can change the number of available items at / page. (index)
 
+### Known bugs or missing features
+
+- Menu page will accept a value of -1 for a given item and will put it in the basket. Needs to be fixed in python.
+- Admin cannot delete individual items, only entire order.
+- Users cannot delete individual items from the basket, only from the menu page.
+- There is no connection to any credit card service provider, needs to be implemented.
+
 ---
 
 ## Contributing
