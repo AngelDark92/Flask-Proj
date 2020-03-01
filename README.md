@@ -16,7 +16,7 @@
 
 
 
-## Table of Contents (Optional)
+## Table of Contents
 
 - [Installation](#installation)
 - [Features](#features)
@@ -48,6 +48,7 @@ requests
 ---
 
 ## Features
+
 ### Users
 - Users can register, password is protected by hash256 via werkzeug.security.
 - Ability for users to log in and order meals and/or seats.
